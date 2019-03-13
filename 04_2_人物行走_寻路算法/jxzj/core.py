@@ -78,7 +78,7 @@ class GameMap(Array2D):
                 if self[x][y] == 0:  # 不是障碍，画空心的矩形
                     pygame.draw.rect(screen_surf, (255, 255, 255), (self.x + x * 32, self.y + y * 32, 32, 32), 1)
                 else:  # 是障碍，画黑色实心的矩形
-                    pygame.draw.rect(screen_surf, (0, 0, 0, 100), (self.x + x * 32 + 1, self.y + y * 32 + 1, 30, 30), 0)
+                    pygame.draw.rect(screen_surf, (0, 0, 0), (self.x + x * 32 + 1, self.y + y * 32 + 1, 30, 30), 0)
 
     def load_walk_file(self, path):
         """
@@ -90,3 +90,96 @@ class GameMap(Array2D):
                     v = int(file.readline())
                     self[x][y] = v
         # self.show_array2d()
+
+
+class CharWalk:
+    """
+    人物行走类 char是character的缩写
+    """
+    DIR_DOWN = 0
+    DIR_LEFT = 1
+    DIR_RIGHT = 2
+    DIR_UP = 3
+
+    def __init__(self, hero_surf, char_id, dir, mx, my):
+        """
+        :param hero_surf: 精灵图的surface
+        :param char_id: 角色id
+        :param dir: 角色方向
+        :param mx: 角色所在的小格子坐标
+        :param my: 角色所在的小格子坐标
+        """
+        self.hero_surf = hero_surf
+        self.char_id = char_id
+        self.dir = dir
+        self.mx = mx
+        self.my = my
+
+        self.is_walking = False  # 角色是否正在移动
+        self.frame = 1  # 角色当前帧
+        self.x = mx * 32  # 角色相对于地图的坐标
+        self.y = my * 32
+        # 角色下一步需要去的格子
+        self.next_mx = 0
+        self.next_my = 0
+        # 步长
+        self.step = 2  # 每帧移动的像素
+
+    def draw(self, screen_surf, map_x, map_y):
+        cell_x = self.char_id % 12 + int(self.frame)
+        cell_y = self.char_id // 4 + self.dir
+        Sprite.draw(screen_surf, self.hero_surf, map_x + self.x, map_y + self.y, cell_x, cell_y)
+
+    def goto(self, x, y):
+        self.next_mx = x
+        self.next_my = y
+
+        # 设置人物面向
+        if self.next_mx > self.mx:
+            self.dir = CharWalk.DIR_RIGHT
+        elif self.next_mx < self.mx:
+            self.dir = CharWalk.DIR_LEFT
+
+        if self.next_my > self.my:
+            self.dir = CharWalk.DIR_DOWN
+        elif self.next_my < self.my:
+            self.dir = CharWalk.DIR_UP
+
+        self.is_walking = True
+
+    def move(self):
+        if not self.is_walking:
+            return
+        dest_x = self.next_mx * 32
+        dest_y = self.next_my * 32
+
+        # 向目标位置靠近
+        if self.x < dest_x:
+            self.x += self.step
+            if self.x >= dest_x:
+                self.x = dest_x
+        elif self.x > dest_x:
+            self.x -= self.step
+            if self.x <= dest_x:
+                self.x = dest_x
+
+        if self.y < dest_y:
+            self.y += self.step
+            if self.y >= dest_y:
+                self.y = dest_y
+        elif self.y > dest_y:
+            self.y -= self.step
+            if self.y <= dest_y:
+                self.y = dest_y
+
+        # 改变当前帧
+        self.frame = (self.frame + 0.1) % 3
+
+        # 角色当前位置
+        self.mx = int(self.x / 32)
+        self.my = int(self.y / 32)
+
+        # 到达了目标点
+        if self.x == dest_x and self.y == dest_y:
+            self.frame = 1
+            self.is_walking = False
