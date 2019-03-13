@@ -2,3 +2,5 @@
 02_准备工作/jxzj/.idea/
 03_1_使用精灵图/jxzj/.idea/
 03_1_使用精灵图/jxzj/__pycache__/
+*.xml
+*.pyc
