@@ -2,7 +2,7 @@ import sys
 
 import pygame
 
-from core import Sprite, GameMap, CharWalk
+from core import GameMap, CharWalk
 
 
 class Game:
@@ -40,26 +40,30 @@ class Game:
         self.map_top = pygame.image.load('./img/map/0_top.png').convert_alpha()
         self.game_map = GameMap(self.map_bottom, self.map_top, 0, 0)
         self.game_map.load_walk_file('./img/map/0.map')
-        self.role = CharWalk(self.hero, 0, CharWalk.DIR_DOWN, 5, 10)
-        self.role.goto(14, 10)
+        self.role = CharWalk(self.hero, 48, CharWalk.DIR_DOWN, 5, 10)
 
     def update(self):
         while True:
             self.clock.tick(self.fps)
             # 逻辑更新
-            self.role.move()
+            self.role.logic()
             self.event_handler()
             # 画面更新
             self.game_map.draw_bottom(self.screen_surf)
             self.role.draw(self.screen_surf, self.game_map.x, self.game_map.y)
             self.game_map.draw_top(self.screen_surf)
-            self.game_map.draw_grid(self.screen_surf)
+            # self.game_map.draw_grid(self.screen_surf)
             pygame.display.update()
 
     def event_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                mx = (mouse_x - self.game_map.x) // 32
+                my = (mouse_y - self.game_map.y) // 32
+                self.role.find_path(self.game_map, (mx, my))
 
 
 if __name__ == '__main__':
