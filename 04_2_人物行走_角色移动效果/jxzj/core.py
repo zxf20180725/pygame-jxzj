@@ -127,10 +127,14 @@ class CharWalk:
 
     def draw(self, screen_surf, map_x, map_y):
         cell_x = self.char_id % 12 + int(self.frame)
-        cell_y = self.char_id // 4 + self.dir
+        cell_y = self.char_id // 12 + self.dir
         Sprite.draw(screen_surf, self.hero_surf, map_x + self.x, map_y + self.y, cell_x, cell_y)
 
     def goto(self, x, y):
+        """
+        :param x: 目标点
+        :param y: 目标点
+        """
         self.next_mx = x
         self.next_my = y
 
