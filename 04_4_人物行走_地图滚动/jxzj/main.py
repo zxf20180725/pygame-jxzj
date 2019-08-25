@@ -53,7 +53,7 @@ class Game:
             self.game_map.draw_bottom(self.screen_surf)
             self.role.draw(self.screen_surf, self.game_map.x, self.game_map.y)
             self.game_map.draw_top(self.screen_surf)
-            # self.game_map.draw_grid(self.screen_surf)
+            self.game_map.draw_grid(self.screen_surf)
             pygame.display.update()
 
     def event_handler(self):
@@ -64,6 +64,7 @@ class Game:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 mx = int((mouse_x - self.game_map.x) / 32)
                 my = int((mouse_y - self.game_map.y) / 32)
+                # 寻路
                 self.role.find_path(self.game_map, (mx, my))
 
 

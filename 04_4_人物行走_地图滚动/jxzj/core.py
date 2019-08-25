@@ -226,7 +226,8 @@ class CharWalk:
         if self.path_index == len(self.path):
             self.path = []
             self.path_index = 0
-        else:  # 如果没走到终点，就往下一个格子走
+        # 如果没走到终点，就往下一个格子走
+        else:
             self.goto(self.path[self.path_index].x, self.path[self.path_index].y)
             self.path_index += 1
 
