@@ -85,7 +85,7 @@ class Connection:
         """
         处理客户端的数据，需要子类实现
         """
-        raise ImportError
+        raise NotImplementedError
 
 
 @Server.register_cls
