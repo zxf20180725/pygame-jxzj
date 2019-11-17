@@ -90,10 +90,16 @@ class Connection:
 
 @Server.register_cls
 class Player(Connection):
+    """
+    玩家类，我们的游戏中，每个连接都是一个Player对象
+    """
 
     def __init__(self, *args):
         super().__init__(*args)
         self.login_state = False  # 登录状态
+        self.nickname = None  # 昵称
+        self.x = None  # 人物在地图上的坐标
+        self.y = None
 
     def deal_data(self, bytes):
         """
@@ -101,8 +107,8 @@ class Player(Connection):
         :param bytes:
         :return:
         """
-        print(bytes)
+        print('\n客户端消息：',bytes.decode('utf8'))
 
 
 if __name__ == '__main__':
-    Server('192.168.2.27', 6666)
+    Server('127.0.0.1', 6666)

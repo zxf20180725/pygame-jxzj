@@ -184,14 +184,12 @@ class CharWalk:
 
         # 改变当前帧
         self.frame = (self.frame + 0.1) % 3
-
         # 角色当前位置
         self.mx = int(self.x / 32)
         self.my = int(self.y / 32)
 
         # 到达了目标点
         if self.x == dest_x and self.y == dest_y:
-            self.frame = 1
             self.is_walking = False
 
     def logic(self):
@@ -204,6 +202,7 @@ class CharWalk:
         # 如果寻路走到终点了
         if self.path_index == len(self.path):
             self.path = []
+            self.frame = 1
             self.path_index = 0
         else:  # 如果没走到终点，就往下一个格子走
             self.goto(self.path[self.path_index].x, self.path[self.path_index].y)
