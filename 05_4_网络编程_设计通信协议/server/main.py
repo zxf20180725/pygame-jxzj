@@ -2,6 +2,7 @@ import datetime
 import json
 import socket
 import traceback
+import uuid
 from threading import Thread
 
 
@@ -68,10 +69,12 @@ class Connection:
 
     def recv_data(self):
         # 接收数据
+        bytes = None
         try:
             while True:
-                bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，不去做分包处理。
+                bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
                 if len(bytes) == 0:
+                    Server.write_log('有玩家离线啦：'+str(self.game_data))
                     self.socket.close()
                     # 删除连接
                     self.connections.remove(self)
@@ -80,7 +83,7 @@ class Connection:
                 self.deal_data(bytes)
         except:
             self.connections.remove(self)
-            Server.write_log('有用户接收数据异常，已强制下线，详细原因：\n' + traceback.format_exc())
+            Server.write_log('有用户发送的数据异常：'+bytes.decode()+'\n'+'已强制下线，详细原因：\n' + traceback.format_exc())
 
     def deal_data(self, bytes):
         """
@@ -109,7 +112,7 @@ class Player(Connection):
                 客服端发送：{"protocol":"cli_login","username":"玩家账号","password":"玩家密码"}|#|
                 服务端返回：
                     登录成功：
-                        {"protocol":"ser_login","result":true,"msg":"登录成功"}|#|
+                        {"protocol":"ser_login","result":true,"player_data":{"nickname":"昵称","x":5,"y":5}}|#|
                     登录失败：
                         {"protocol":"ser_login","result":false,"msg":"账号或密码错误"}|#|
             玩家移动协议：
@@ -125,31 +128,63 @@ class Player(Connection):
         # 将字节流转成字符串
         pck = bytes.decode()
         # 切割数据包
-        pck.split('|#|')
+        pck = pck.split('|#|')
         # 处理每一个协议,最后一个是空字符串，不用处理它
         for str_protocol in pck[:-1]:
             protocol = json.loads(str_protocol)
             # 根据协议中的protocol字段，直接调用相应的函数处理
-            self.protocol_handler(protocol)
+            self.protocol_handler(self, protocol)
+
 
 class ProtocolHandler:
     """
-    处理客户端返回过来的协议
+    处理客户端返回过来的数据协议
     """
-    def __call__(self, *args, **kwargs):
-        return self.handler(*args,**kwargs)
 
-    def handler(self, protocol):
+    def __call__(self, player, protocol):
         protocol_name = protocol['protocol']
         if not hasattr(self, protocol_name):
             return None
         # 调用与协议同名的方法
         method = getattr(self, protocol_name)
-        return method(protocol)
+        result = method(player, protocol)
+        if result:
+            player.socket.sendall((json.dumps(result,ensure_ascii=False) + '|#|').encode())
+        return result
 
-    def cli_login(self,protocol):
-        pass
+    @staticmethod
+    def cli_login(player, protocol):
+        """
+        客户端登录请求
+        {"protocol":"cli_login","username":"玩家账号","password":"玩家密码"}|#|
+        登录成功返回：
+        {"protocol":"ser_login","result":true,"player_data":{"nickname":"昵称","x":5,"y":5}}|#|
+        登录不成功返回：
+        {"protocol": "ser_login", "result": false, "msg": "账号或密码错误"}
+        """
+        # 由于我们还没接入数据库，玩家的信息还无法持久化，所以我们写死几个账号在这里吧
+        data = [
+            ['admin01', '123456', '玩家昵称1'],
+            ['admin02', '123456', '玩家昵称2'],
+            ['admin03', '123456', '玩家昵称3'],
+        ]
+        username = protocol.get('username')
+        password = protocol.get('password')
+        for user_info in data:
+            if user_info[0] == username and user_info[1] == password:
+                player.login_state = True
+                player.game_data = {
+                    'uuid':uuid.uuid4().hex,
+                    'nickname': user_info[2],
+                    'x': 5,  # 初始位置
+                    'y': 5
+                }
+                # 登录成功
+                return {"protocol": "ser_login", "result": True, "player_data": player.game_data}
+
+        # 登录不成功
+        return {"protocol": "ser_login", "result": False, "msg": "账号或密码错误"}
 
 
 if __name__ == '__main__':
-    Server('192.168.2.27', 6666)
+    Server('127.0.0.1', 6666)
