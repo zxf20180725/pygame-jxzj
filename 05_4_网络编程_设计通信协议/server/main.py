@@ -82,6 +82,7 @@ class Connection:
                 # 处理数据
                 self.deal_data(bytes)
         except:
+            self.socket.close()
             self.connections.remove(self)
             Server.write_log('有用户发送的数据异常：'+bytes.decode()+'\n'+'已强制下线，详细原因：\n' + traceback.format_exc())
 
@@ -91,15 +92,22 @@ class Connection:
         """
         raise NotImplementedError
 
+    def send(self, py_obj):
+        """
+        给玩家发送协议包
+        py_obj:python的字典或者list
+        """
+        self.socket.sendall((json.dumps(py_obj, ensure_ascii=False) + '|#|').encode())
+
 
 @Server.register_cls
 class Player(Connection):
 
     def __init__(self, *args):
-        super().__init__(*args)
         self.login_state = False  # 登录状态
         self.game_data = None  # 玩家游戏中的相关数据
         self.protocol_handler = ProtocolHandler()  # 协议处理对象
+        super().__init__(*args)
 
     def deal_data(self, bytes):
         """
@@ -112,18 +120,18 @@ class Player(Connection):
                 客服端发送：{"protocol":"cli_login","username":"玩家账号","password":"玩家密码"}|#|
                 服务端返回：
                     登录成功：
-                        {"protocol":"ser_login","result":true,"player_data":{"nickname":"昵称","x":5,"y":5}}|#|
+                        {"protocol":"ser_login","result":true,"player_data":{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}}|#|
                     登录失败：
                         {"protocol":"ser_login","result":false,"msg":"账号或密码错误"}|#|
+            当前所有在线玩家：
+                服务端发送：{"protocol":"ser_player_list","player_list":[{"nickname":"昵称","x":5,"y":5}]}|#|
             玩家移动协议：
                 客户端发送：{"protocol":"cli_move","x":100,"y":100}|#|
-                服务端发送：{"protocol":"ser_move","uuid":"07103feb0bb041d4b14f4f61379fbbfa","x":100,"y":100}|#|
+                服务端发送给所有客户端：{"protocol":"ser_move","player_data":{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}}|#|
             玩家上线协议：
-                服务端发送：{"protocol":"ser_online","uuid":"07103feb0bb041d4b14f4f61379fbbfa","x":100,"y":100}|#|
+                服务端发送给所有客户端：{"protocol":"ser_online","player_data":{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}}|#|
             玩家下线协议：
-                服务端发送：{"protocol":"ser_offline","uuid":"07103feb0bb041d4b14f4f61379fbbfa"}|#|
-        :param bytes:
-        :return:
+                服务端发送给所有客户端：{"protocol":"ser_offline","player_data":{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}}|#|
         """
         # 将字节流转成字符串
         pck = bytes.decode()
@@ -148,8 +156,6 @@ class ProtocolHandler:
         # 调用与协议同名的方法
         method = getattr(self, protocol_name)
         result = method(player, protocol)
-        if result:
-            player.socket.sendall((json.dumps(result,ensure_ascii=False) + '|#|').encode())
         return result
 
     @staticmethod
@@ -174,17 +180,27 @@ class ProtocolHandler:
             if user_info[0] == username and user_info[1] == password:
                 player.login_state = True
                 player.game_data = {
-                    'uuid':uuid.uuid4().hex,
+                    'uuid': uuid.uuid4().hex,
                     'nickname': user_info[2],
                     'x': 5,  # 初始位置
                     'y': 5
                 }
-                # 登录成功
-                return {"protocol": "ser_login", "result": True, "player_data": player.game_data}
+                # 发送登录成功协议
+                player.send({"protocol": "ser_login", "result": True, "player_data": player.game_data})
+                # 发送当前在线玩家协议
+                player_list = []
+                for p in player.connections:
+                    if p is not player and p.login_state:
+                        player_list.append(p.game_data)
+                        # # 发送上线信息给其他玩家
+                        # player.send({"protocol": "ser_online", "player_data": player.game_data})
+
+                player.send({"protocol": "ser_player_list", "player_list": player_list})
+                break
 
         # 登录不成功
-        return {"protocol": "ser_login", "result": False, "msg": "账号或密码错误"}
+        player.send({"protocol": "ser_login", "result": False, "msg": "账号或密码错误"})
 
 
 if __name__ == '__main__':
-    Server('127.0.0.1', 6666)
+    server = Server('127.0.0.1', 6666)

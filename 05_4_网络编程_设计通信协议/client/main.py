@@ -8,4 +8,6 @@ s.sendall('{"protocol":"cli_login","username":"admin01","password":"123456"}|#|'
 # 接收服务端返回的消息
 data = s.recv(4096)
 print(data.decode())
+data = s.recv(4096)
+print(data.decode())
 s.close()
