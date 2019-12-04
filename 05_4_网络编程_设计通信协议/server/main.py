@@ -187,14 +187,14 @@ class ProtocolHandler:
                 }
                 # 发送登录成功协议
                 player.send({"protocol": "ser_login", "result": True, "player_data": player.game_data})
-                # 发送当前在线玩家协议
+
                 player_list = []
                 for p in player.connections:
                     if p is not player and p.login_state:
                         player_list.append(p.game_data)
-                        # # 发送上线信息给其他玩家
-                        # player.send({"protocol": "ser_online", "player_data": player.game_data})
-
+                        # 发送上线信息给其他玩家
+                        player.send({"protocol": "ser_online", "player_data": player.game_data})
+                # 发送当前在线玩家列表（不包括自己）
                 player.send({"protocol": "ser_player_list", "player_list": player_list})
                 break
 
