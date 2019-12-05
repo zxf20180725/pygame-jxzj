@@ -175,11 +175,6 @@ class ProtocolHandler:
     def cli_login(player, protocol):
         """
         客户端登录请求
-        {"protocol":"cli_login","username":"玩家账号","password":"玩家密码"}|#|
-        登录成功返回：
-        {"protocol":"ser_login","result":true,"player_data":{"nickname":"昵称","x":5,"y":5}}|#|
-        登录不成功返回：
-        {"protocol": "ser_login", "result": false, "msg": "账号或密码错误"}
         """
         # 由于我们还没接入数据库，玩家的信息还无法持久化，所以我们写死几个账号在这里吧
         data = [
@@ -189,30 +184,41 @@ class ProtocolHandler:
         ]
         username = protocol.get('username')
         password = protocol.get('password')
+
+        # 校验帐号密码是否正确
+        login_state = False
+        nickname = None
         for user_info in data:
             if user_info[0] == username and user_info[1] == password:
-                player.login_state = True
-                player.game_data = {
-                    'uuid': uuid.uuid4().hex,
-                    'nickname': user_info[2],
-                    'x': 5,  # 初始位置
-                    'y': 5
-                }
-                # 发送登录成功协议
-                player.send({"protocol": "ser_login", "result": True, "player_data": player.game_data})
-
-                player_list = []
-                for p in player.connections:
-                    if p is not player and p.login_state:
-                        player_list.append(p.game_data)
-                        # 发送上线信息给其他玩家
-                        player.send({"protocol": "ser_online", "player_data": player.game_data})
-                # 发送当前在线玩家列表（不包括自己）
-                player.send({"protocol": "ser_player_list", "player_list": player_list})
+                login_state = True
+                nickname = user_info[2]
                 break
 
         # 登录不成功
-        player.send({"protocol": "ser_login", "result": False, "msg": "账号或密码错误"})
+        if not login_state:
+            player.send({"protocol": "ser_login", "result": False, "msg": "账号或密码错误"})
+            return
+
+        # 登录成功
+        player.login_state = True
+        player.game_data = {
+            'uuid': uuid.uuid4().hex,
+            'nickname': nickname,
+            'x': 5,  # 初始位置
+            'y': 5
+        }
+
+        # 发送登录成功协议
+        player.send({"protocol": "ser_login", "result": True, "player_data": player.game_data})
+
+        player_list = []
+        for p in player.connections:
+            if p is not player and p.login_state:
+                player_list.append(p.game_data)
+                # 发送上线信息给其他玩家
+                player.send({"protocol": "ser_online", "player_data": player.game_data})
+        # 发送当前在线玩家列表（不包括自己）
+        player.send({"protocol": "ser_player_list", "player_list": player_list})
 
 
 if __name__ == '__main__':
