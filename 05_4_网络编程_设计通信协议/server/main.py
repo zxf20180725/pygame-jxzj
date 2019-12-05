@@ -156,6 +156,21 @@ class Player(Connection):
             # 根据协议中的protocol字段，直接调用相应的函数处理
             self.protocol_handler(self, protocol)
 
+    def send_all_player(self, py_obj):
+        """
+        把这个数据包发送给所有在线玩家，包括自己
+        """
+        for player in self.connections:
+            player.send(py_obj)
+
+    def send_without_self(self, py_obj):
+        """
+        发送给除了自己的所有在线玩家
+        """
+        for player in self.connections:
+            if player is not self:
+                player.send(py_obj)
+
 
 class ProtocolHandler:
     """
@@ -211,14 +226,31 @@ class ProtocolHandler:
         # 发送登录成功协议
         player.send({"protocol": "ser_login", "result": True, "player_data": player.game_data})
 
+        # 发送上线信息给其他玩家
+        player.send_without_self({"protocol": "ser_online", "player_data": player.game_data})
+
         player_list = []
         for p in player.connections:
             if p is not player and p.login_state:
                 player_list.append(p.game_data)
-                # 发送上线信息给其他玩家
-                player.send({"protocol": "ser_online", "player_data": player.game_data})
+
         # 发送当前在线玩家列表（不包括自己）
         player.send({"protocol": "ser_player_list", "player_list": player_list})
+
+    @staticmethod
+    def cli_move(player, protocol):
+        """
+        客户端移动请求
+        """
+        # 如果这个玩家没有登录，那么不理会这个数据包
+        if not player.login_state:
+            return
+
+        # 客户端想要去的位置
+        x = protocol.get('x')
+        y = protocol.get('y')
+
+
 
 
 if __name__ == '__main__':
