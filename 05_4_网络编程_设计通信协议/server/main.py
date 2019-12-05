@@ -1,6 +1,7 @@
 import datetime
 import json
 import socket
+import time
 import traceback
 import uuid
 from threading import Thread
@@ -18,6 +19,16 @@ class Server:
         s = "[" + str(cur_time) + "]" + msg
         print(s)
 
+    @staticmethod
+    def write_in_log_file(msg):
+        """
+        把一些重要的信息写入日志文件
+        """
+        with open('./'+time.strftime('%Y-%m-%d',time.localtime(time.time()))+'.log',mode='a+',encoding='utf8') as file:
+            cur_time = datetime.datetime.now()
+            s = "[" + str(cur_time) + "]" + msg
+            file.write(s)
+
     def __init__(self, ip, port):
         self.connections = []  # 所有客户端连接
         self.write_log('服务器启动中，请稍候...')
@@ -26,7 +37,8 @@ class Server:
             self.listener.bind((ip, port))  # 绑定ip、端口
             self.listener.listen(5)  # 最大等待数
         except:
-            self.write_log('服务器启动失败，请检查ip端口是否被占用。详细原因：\n' + traceback.format_exc())
+            self.write_log('服务器启动失败，请检查ip端口是否被占用。详细原因请查看日志文件')
+            self.write_in_log_file(traceback.format_exc())
 
         if self.__user_cls is None:
             self.write_log('服务器启动失败，未注册用户自定义类')
@@ -84,7 +96,8 @@ class Connection:
         except:
             self.socket.close()
             self.connections.remove(self)
-            Server.write_log('有用户发送的数据异常：'+bytes.decode()+'\n'+'已强制下线，详细原因：\n' + traceback.format_exc())
+            Server.write_log('有用户发送的数据异常：' + bytes.decode() + '\n' + '已强制下线，详细原因请查看日志文件')
+            Server.write_in_log_file(traceback.format_exc())
 
     def deal_data(self, bytes):
         """
