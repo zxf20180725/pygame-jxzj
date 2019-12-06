@@ -105,12 +105,6 @@ class Connection:
         """
         raise NotImplementedError
 
-    def send(self, py_obj):
-        """
-        给玩家发送协议包
-        py_obj:python的字典或者list
-        """
-        self.socket.sendall((json.dumps(py_obj, ensure_ascii=False) + '|#|').encode())
 
 
 @Server.register_cls
@@ -155,6 +149,13 @@ class Player(Connection):
             protocol = json.loads(str_protocol)
             # 根据协议中的protocol字段，直接调用相应的函数处理
             self.protocol_handler(self, protocol)
+
+    def send(self, py_obj):
+        """
+        给玩家发送协议包
+        py_obj:python的字典或者list
+        """
+        self.socket.sendall((json.dumps(py_obj, ensure_ascii=False) + '|#|').encode())
 
     def send_all_player(self, py_obj):
         """
@@ -251,7 +252,7 @@ class ProtocolHandler:
         player.game_data['y'] = protocol.get('y')
 
         # 告诉其他玩家当前玩家的位置变化了
-        player.send_without_self({'protocol': 'ser_move', 'player_data': player.game_data})
+        player.send_without_self({"protocol": "ser_move", "player_data": player.game_data})
 
 
 if __name__ == '__main__':
