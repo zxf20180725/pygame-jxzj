@@ -161,14 +161,15 @@ class Player(Connection):
         把这个数据包发送给所有在线玩家，包括自己
         """
         for player in self.connections:
-            player.send(py_obj)
+            if player.login_state:
+                player.send(py_obj)
 
     def send_without_self(self, py_obj):
         """
         发送给除了自己的所有在线玩家
         """
         for player in self.connections:
-            if player is not self:
+            if player is not self and player.login_state:
                 player.send(py_obj)
 
 
@@ -233,7 +234,6 @@ class ProtocolHandler:
         for p in player.connections:
             if p is not player and p.login_state:
                 player_list.append(p.game_data)
-
         # 发送当前在线玩家列表（不包括自己）
         player.send({"protocol": "ser_player_list", "player_list": player_list})
 
@@ -247,10 +247,11 @@ class ProtocolHandler:
             return
 
         # 客户端想要去的位置
-        x = protocol.get('x')
-        y = protocol.get('y')
+        player.game_data['x'] = protocol.get('x')
+        player.game_data['y'] = protocol.get('y')
 
-
+        # 告诉其他玩家当前玩家的位置变化了
+        player.send_without_self({'protocol': 'ser_move', 'player_data': player.game_data})
 
 
 if __name__ == '__main__':
