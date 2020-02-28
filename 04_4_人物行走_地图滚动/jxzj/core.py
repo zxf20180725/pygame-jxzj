@@ -145,7 +145,6 @@ class CharWalk:
         # 角色下一步需要去的格子
         self.next_mx = 0
         self.next_my = 0
-        # 步长
         self.step = 2  # 每帧移动的像素
         # 寻路路径
         self.path = []

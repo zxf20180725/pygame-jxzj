@@ -124,7 +124,7 @@ class Player(Connection):
                     登录失败：
                         {"protocol":"ser_login","result":false,"msg":"账号或密码错误"}|#|
             当前所有在线玩家：
-                服务端发送：{"protocol":"ser_player_list","player_list":[{"nickname":"昵称","x":5,"y":5}]}|#|
+                服务端发送：{"protocol":"ser_player_list","player_list":[{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}]}|#|
             玩家移动协议：
                 客户端发送：{"protocol":"cli_move","x":100,"y":100}|#|
                 服务端发送给所有客户端：{"protocol":"ser_move","player_data":{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}}|#|
