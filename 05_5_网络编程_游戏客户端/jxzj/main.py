@@ -1,8 +1,11 @@
 import sys
+import socket
 
 import pygame
 
 from core import GameMap, CharWalk
+from game_global import g
+from net import Client
 
 
 class Game:
@@ -42,18 +45,34 @@ class Game:
         self.game_map.load_walk_file('./img/map/0.map')
         self.role = None  # CharWalk(self.hero, 48, CharWalk.DIR_DOWN, 5, 10)
         self.other_player = []
+        self.game_state = 0  # 0未登录 1已登录
+        # 与服务端建立连接
+        s = socket.socket()
+        s.connect(('127.0.0.1', 6666))  # 与服务器建立连接
+        self.client = Client(s, self)
+        g.client = self.client  # 把client赋值给全局对象上，以便到处使用
+        # 登录
+        self.client.login()
 
     def update(self):
         while True:
             self.clock.tick(self.fps)
+            if self.game_state == 0:  # 还未登录的时候，没必要执行这些逻辑
+                continue
             # 逻辑更新
             self.role.logic()
             self.event_handler()
+            # 其他玩家逻辑（移动逻辑）
+            for player in self.other_player:
+                player.logic()
             self.game_map.roll(self.role.x, self.role.y)
             # 画面更新
-            # self.game_map.draw_bottom(self.screen_surf)
-            # self.role.draw(self.screen_surf, self.game_map.x, self.game_map.y)
-            # self.game_map.draw_top(self.screen_surf)
+            self.game_map.draw_bottom(self.screen_surf)
+            self.role.draw(self.screen_surf, self.game_map.x, self.game_map.y)
+            # 绘制其他玩家
+            for player in self.other_player:
+                player.draw(self.screen_surf, self.game_map.x, self.game_map.y)
+            self.game_map.draw_top(self.screen_surf)
             # self.game_map.draw_grid(self.screen_surf)
             pygame.display.update()
 

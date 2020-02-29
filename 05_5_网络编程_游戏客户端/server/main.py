@@ -195,20 +195,22 @@ class ProtocolHandler:
         """
         # 由于我们还没接入数据库，玩家的信息还无法持久化，所以我们写死几个账号在这里吧
         data = [
-            ['admin01', '123456', '玩家昵称1'],
-            ['admin02', '123456', '玩家昵称2'],
-            ['admin03', '123456', '玩家昵称3'],
+            ['admin01', '123456', '玩家昵称1', 0],
+            ['admin02', '123456', '玩家昵称2', 48],
+            ['admin03', '123456', '玩家昵称3', 6],
         ]
         username = protocol.get('username')
         password = protocol.get('password')
 
-        # 校验帐号密码是否正确
         login_state = False
         nickname = None
+        role_id = None  # 角色id
+        # 校验帐号密码是否正确
         for user_info in data:
             if user_info[0] == username and user_info[1] == password:
                 login_state = True
                 nickname = user_info[2]
+                role_id = user_info[3]
                 break
 
         # 登录不成功
@@ -222,7 +224,8 @@ class ProtocolHandler:
             'uuid': uuid.uuid4().hex,
             'nickname': nickname,
             'x': 5,  # 初始位置
-            'y': 5
+            'y': 5,
+            'role_id': role_id
         }
 
         # 发送登录成功协议
@@ -235,7 +238,7 @@ class ProtocolHandler:
         for p in player.connections:
             if p is not player and p.login_state:
                 player_list.append(p.game_data)
-        # 发送当前在线玩家列表（不包括自己）
+        # 发送当前在线玩家列表给自己（player_list不包括自己）
         player.send({"protocol": "ser_player_list", "player_list": player_list})
 
     @staticmethod

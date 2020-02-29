@@ -1,6 +1,7 @@
 import pygame
 
 from astar import AStar
+from game_global import g
 
 
 class Sprite:
@@ -124,7 +125,7 @@ class CharWalk:
     DIR_RIGHT = 2
     DIR_UP = 3
 
-    def __init__(self, hero_surf, char_id, dir, mx, my):
+    def __init__(self, hero_surf, char_id, dir, mx, my, **kwargs):
         """
         :param hero_surf: 精灵图的surface
         :param char_id: 角色id
@@ -177,6 +178,10 @@ class CharWalk:
             self.dir = CharWalk.DIR_UP
 
         self.is_walking = True
+
+        # 告诉服务端自己移动了(其他玩家也属于player对象噢，所以这里得避免一下other_player里面的player也调用这个方法)
+        if g.player is self:
+            g.client.move(self)
 
     def move(self):
         if not self.is_walking:
@@ -251,4 +256,6 @@ class Player(CharWalk):
     """
 
     def __init__(self, *args, **kwargs):
-        pass
+        self.name = kwargs['name']  # 昵称
+        self.uuid = kwargs['uuid']  # uuid 玩家的唯一标识
+        super().__init__(*args, **kwargs)
