@@ -1,0 +1,128 @@
+[2020-02-28 17:45:26.690083]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 95, in recv_data
+    self.deal_data(bytes)
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 151, in deal_data
+    self.protocol_handler(self, protocol)
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 183, in __call__
+    protocol_name = protocol['protocol']
+KeyError: 'protocol'
+[2020-02-28 18:22:51.999843]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:24:30.541653]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:25:45.009591]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:26:12.662860]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:26:29.365726]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:27:07.086597]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:29:25.982255]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 18:32:51.679833]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 19:31:00.170938]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 19:33:56.212144]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 19:33:57.623431]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 19:46:47.655505]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 19:46:50.329632]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:24:43.676143]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:24:44.184836]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:30:46.871138]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:33:01.358400]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:33:02.424616]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:34:06.293170]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:34:07.246007]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:37:13.326293]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:39:53.797450]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 20:39:55.030297]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:02:40.426920]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:02:42.370999]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:07:33.691162]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:07:36.371728]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:07:37.825583]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:12:18.268969]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-02-28 21:12:19.568547]Traceback (most recent call last):
+  File "E:/work/pygame-jxzj/05_5_网络编程_游戏客户端/server/main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。

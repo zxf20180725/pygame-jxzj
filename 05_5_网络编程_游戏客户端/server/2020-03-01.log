@@ -1,0 +1,8 @@
+[2020-03-01 19:33:50.832392]Traceback (most recent call last):
+  File "main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[2020-03-01 19:35:15.555710]Traceback (most recent call last):
+  File "main.py", line 87, in recv_data
+    bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
+ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。

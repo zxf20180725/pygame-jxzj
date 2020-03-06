@@ -24,7 +24,8 @@ class Server:
         """
         把一些重要的信息写入日志文件
         """
-        with open('./'+time.strftime('%Y-%m-%d',time.localtime(time.time()))+'.log',mode='a+',encoding='utf8') as file:
+        with open('./' + time.strftime('%Y-%m-%d', time.localtime(time.time())) + '.log', mode='a+',
+                  encoding='utf8') as file:
             cur_time = datetime.datetime.now()
             s = "[" + str(cur_time) + "]" + msg
             file.write(s)
@@ -86,7 +87,7 @@ class Connection:
             while True:
                 bytes = self.socket.recv(4096)  # 我们这里只做一个简单的服务端框架，只做粘包不做分包处理。
                 if len(bytes) == 0:
-                    Server.write_log('有玩家离线啦：'+str(self.game_data))
+                    Server.write_log('有玩家离线啦：' + str(self.game_data))
                     self.socket.close()
                     # 删除连接
                     self.connections.remove(self)
@@ -130,7 +131,7 @@ class Player(Connection):
                     登录失败：
                         {"protocol":"ser_login","result":false,"msg":"账号或密码错误"}|#|
             当前所有在线玩家：
-                服务端发送：{"protocol":"ser_player_list","player_list":[{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}]}|#|
+                服务端发送：{"protocol":"ser_player_list","player_list":[{"nickname":"昵称","x":5,"y":5}]}|#|
             玩家移动协议：
                 客户端发送：{"protocol":"cli_move","x":100,"y":100}|#|
                 服务端发送给所有客户端：{"protocol":"ser_move","player_data":{"uuid":"07103feb0bb041d4b14f4f61379fbbfa","nickname":"昵称","x":5,"y":5}}|#|
@@ -194,20 +195,22 @@ class ProtocolHandler:
         """
         # 由于我们还没接入数据库，玩家的信息还无法持久化，所以我们写死几个账号在这里吧
         data = [
-            ['admin01', '123456', '玩家昵称1'],
-            ['admin02', '123456', '玩家昵称2'],
-            ['admin03', '123456', '玩家昵称3'],
+            ['admin01', '123456', '狡猾的皮球', 0],
+            ['admin02', '123456', '玩家昵称2', 48],
+            ['admin03', '123456', '玩家昵称3', 6],
         ]
         username = protocol.get('username')
         password = protocol.get('password')
 
-        # 校验帐号密码是否正确
         login_state = False
         nickname = None
+        role_id = None  # 角色id
+        # 校验帐号密码是否正确
         for user_info in data:
             if user_info[0] == username and user_info[1] == password:
                 login_state = True
                 nickname = user_info[2]
+                role_id = user_info[3]
                 break
 
         # 登录不成功
@@ -221,7 +224,8 @@ class ProtocolHandler:
             'uuid': uuid.uuid4().hex,
             'nickname': nickname,
             'x': 5,  # 初始位置
-            'y': 5
+            'y': 5,
+            'role_id': role_id
         }
 
         # 发送登录成功协议
@@ -234,7 +238,7 @@ class ProtocolHandler:
         for p in player.connections:
             if p is not player and p.login_state:
                 player_list.append(p.game_data)
-        # 发送当前在线玩家列表（不包括自己）
+        # 发送当前在线玩家列表给自己（player_list不包括自己）
         player.send({"protocol": "ser_player_list", "player_list": player_list})
 
     @staticmethod
@@ -252,6 +256,14 @@ class ProtocolHandler:
 
         # 告诉其他玩家当前玩家的位置变化了
         player.send_without_self({"protocol": "ser_move", "player_data": player.game_data})
+
+    @staticmethod
+    def cli_chat(player, protocol):
+        """
+        客户端聊天
+        """
+        player.send_all_player(
+            {"protocol": "ser_chat", "text": protocol['text'], "nickname": player.game_data['nickname']})
 
 
 if __name__ == '__main__':
